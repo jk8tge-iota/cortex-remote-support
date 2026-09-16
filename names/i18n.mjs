@@ -1,5 +1,5 @@
 const rows = {
- title:['Names Editor','이름 편집기','名前エディター','Namenseditor'], subtitle:['Your sounds. Clearly named.','사운드에 알아보기 쉬운 이름을.','サウンドに、わかりやすい名前を。','Deine Sounds. Klar benannt.'],
+ title:['Names Editor','이름 편집기','名前エディター','Namenseditor'],
  intro:['Edit on your computer, then bring your names to Cortex Remote. Files stay in this browser.','컴퓨터에서 이름을 편집하고 Cortex Remote로 가져오세요. 파일은 이 브라우저에만 저장됩니다.','パソコンで名前を編集して、Cortex Remoteに読み込めます。ファイルはこのブラウザ内に保存されます。','Bearbeite Namen am Computer und importiere sie in Cortex Remote. Dateien bleiben in diesem Browser.'],
  open:['Open app backup','앱 백업 열기','アプリのバックアップを開く','App-Backup öffnen'],blank:['Start blank','빈 구성으로 시작','空の構成で開始','Leer beginnen'],resume:['Resume local draft','저장된 초안 이어서 편집','ローカル下書きを再開','Lokalen Entwurf fortsetzen'],clearDraft:['Clear local draft','로컬 초안 삭제','ローカル下書きを削除','Lokalen Entwurf löschen'],
  download:['Download JSON','JSON 다운로드','JSONをダウンロード','JSON herunterladen'],undo:['Undo','실행 취소','元に戻す','Rückgängig'],redo:['Redo','다시 실행','やり直す','Wiederholen'],
