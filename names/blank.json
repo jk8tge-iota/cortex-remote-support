@@ -1,0 +1,79 @@
+{
+  "appPreferences" : {
+    "language" : "en",
+    "showControlHints" : true,
+    "version" : 1
+  },
+  "controller" : {
+    "channel" : 1,
+    "keepAwake" : true,
+    "presetSlot" : 1,
+    "setlist" : 1,
+    "version" : 1
+  },
+  "created" : 811236808.424733,
+  "endpoints" : [
+
+  ],
+  "favorites" : {
+    "addresses" : [
+
+    ],
+    "version" : 1
+  },
+  "feedback" : {
+    "followExpressions" : false,
+    "followPresets" : false,
+    "followScenes" : false,
+    "followTempo" : false,
+    "mappings" : [
+
+    ],
+    "version" : 1
+  },
+  "layout" : {
+    "hidden" : [
+      "tuner",
+      "gigView",
+      "modes",
+      "favorites"
+    ],
+    "order" : [
+      "scenes",
+      "preset",
+      "tempo",
+      "expression1",
+      "expression2",
+      "tuner",
+      "gigView",
+      "modes",
+      "favorites"
+    ],
+    "version" : 3
+  },
+  "mode" : "presets",
+  "modeSlots" : {
+    "slots" : [
+      0,
+      1,
+      2
+    ],
+    "version" : 1
+  },
+  "names" : {
+    "modes" : {
+
+    },
+    "presetDisplayNames" : {
+
+    },
+    "setlists" : {
+
+    },
+    "slotNames" : {
+
+    },
+    "version" : 2
+  },
+  "version" : 3
+}
