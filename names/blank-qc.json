@@ -11,8 +11,8 @@
     "setlist" : 1,
     "version" : 1
   },
-  "created" : 811322747.664334,
-  "device" : "quadCortexMini",
+  "created" : 811322747.664655,
+  "device" : "quadCortex",
   "endpoints" : [
 
   ],
@@ -75,6 +75,24 @@
 
     },
     "version" : 2
+  },
+  "qcModes" : {
+    "selected" : 0,
+    "slots" : [
+      {
+        "lower" : "presets",
+        "upper" : "presets"
+      },
+      {
+        "lower" : "scenes",
+        "upper" : "scenes"
+      },
+      {
+        "lower" : "stomp",
+        "upper" : "stomp"
+      }
+    ],
+    "version" : 1
   },
   "version" : 4
 }

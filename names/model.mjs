@@ -10,7 +10,10 @@ export const count = text => [...new Intl.Segmenter('en',{granularity:'grapheme'
 export const clean = text => text.replace(/\r\n|[\r\n\t]/g,' ').replace(/^[\p{White_Space}\u200B]+|[\p{White_Space}\u200B]+$/gu,'') || null;
 export const limit = f => f.kind === 'setlist' ? 64 : f.kind === 'preset' ? 15 : 32;
 export const key = f => [f.kind,f.setlist ?? -1,f.preset ?? -1,f.index ?? -1].join(':');
-export const code = p => `${Math.floor((p-1)/4)+1}${'ABCD'[(p-1)%4]}`;
+export const device = a => a?.device ?? 'quadCortexMini';
+export const capacity = a => device(a)==='quadCortex' && !a.qcModes?.slots.some(s=>s.upper!==s.lower && [s.upper,s.lower].includes('presets')) ? 8 : 4;
+export const switchCodes = a => device(a)==='quadCortex' ? [...'ABCDEFGH'] : codes;
+export const code = (p,a) => `${Math.floor((p-1)/capacity(a))+1}${'ABCDEFGH'[(p-1)%capacity(a)]}`;
 export function validField(f) {
   if (!object(f) || Object.keys(f).some(k=>!['kind','setlist','preset','index'].includes(k))) return false;
   if(f.kind==='mode') return f.setlist == null && f.preset == null && int(f.index,0,2);
@@ -60,7 +63,18 @@ function namesValid(n) {
   });
 }
 export function validate(a) {
-  need(object(a)); if(a.version!==3) fail('oldVersion');
+  need(object(a)); if(![3,4].includes(a.version)) fail('oldVersion');
+  if(a.version===3) need(a.device==null && a.qcModes==null);
+  else {
+    need(['quadCortexMini','quadCortex'].includes(a.device));
+    if(a.device==='quadCortexMini') need(a.qcModes==null);
+    else {
+      const m=a.qcModes; need(object(m)&&m.version===1&&Array.isArray(m.slots)&&m.slots.length===3&&int(m.selected,0,2));
+      const used=new Set();
+      for(const s of m.slots){need(object(s));const roles=[s.upper??null,s.lower??null];need(roles.every(r=>r===null)||roles.every(r=>['presets','scenes','stomp'].includes(r)));for(const r of new Set(roles.filter(Boolean))){need(!used.has(r));used.add(r);}}
+      need(used.size>0&&m.slots[m.selected].upper!=null);
+    }
+  }
   need(Number.isFinite(a.created)); namesValid(a.names);
   const c=a.controller; need(object(c)&&c.version===1&&int(c.channel,1,16)&&int(c.presetSlot,1,256)&&int(c.setlist,0,12)&&typeof c.keepAwake==='boolean');
   need(c.outputID==null||int(c.outputID,1,2147483647));
@@ -94,7 +108,7 @@ export function validate(a) {
     if(m.enabled&&n.enabled&&m.source===n.source&&m.group===n.group&&m.channel===n.channel&&overlap(m.pattern,n.pattern)) need(!(m.target.kind==='preset'||n.target.kind==='preset'||m.target.address==null||n.target.address==null||(m.target.address.setlist===n.target.address.setlist&&m.target.address.slot===n.target.address.slot)));
   }
   if(a.webNameEdits!=null) {
-    const e=a.webNameEdits;need(object(e)&&e.version===1&&e.target==='quadCortexMini'&&typeof e.startedBlank==='boolean'&&Array.isArray(e.changes)&&e.changes.length<=56600);const seen=new Set();
+    const e=a.webNameEdits;need(object(e)&&([1,2].includes(e.version))&&e.target===device(a)&&(e.version!==1||e.target==='quadCortexMini')&&typeof e.startedBlank==='boolean'&&Array.isArray(e.changes)&&e.changes.length<=56600);const seen=new Set();
     for(const ch of e.changes){need(object(ch)&&validField(ch.field)&&own(ch,'original')&&own(ch,'edited')&&ch.original!==ch.edited&&!seen.has(key(ch.field)));seen.add(key(ch.field));
       for(const k of ['original','edited']) if(ch[k]!==null) need(typeof ch[k]==='string'&&clean(ch[k])===ch[k]&&count(ch[k])<=(k==='original'&&ch.field.kind==='preset'?64:limit(ch.field)));
       need(get(a.names,ch.field)===ch.edited);
@@ -104,7 +118,7 @@ export function validate(a) {
 }
 export function parse(text) {if(new TextEncoder().encode(text).length>MAX_BYTES) fail('tooLarge'); let a;try{a=JSON.parse(text);}catch{fail();}return validate(a);}
 export class Editor {
-  constructor(archive,blank=false) {this.archive=structuredClone(validate(archive));this.archive.webNameEdits??={version:1,target:'quadCortexMini',startedBlank:blank,changes:[]};this.undoStack=[];this.redoStack=[];}
+  constructor(archive,blank=false) {this.archive=structuredClone(validate(archive));this.archive.webNameEdits??={version:2,target:device(archive),startedBlank:blank,changes:[]};this.archive.webNameEdits.version=2;this.undoStack=[];this.redoStack=[];}
   apply(entries,group=null) {
     const edits=entries.map(({field,value})=>{need(validField(field));const after=clean(value);if(after&&count(after)>limit(field)) fail('tooLong');return {field,before:get(this.archive.names,field),after};}).filter(e=>e.before!==e.after);
     if(!edits.length)return;
@@ -135,11 +149,11 @@ export function tsv(text) {
   if(quoted)fail('invalidPaste');if(cell!==''||row.length){row.push(cell);rows.push(row);}
   if(!rows.length||rows.some(r=>r.length!==rows[0].length))fail('invalidPaste');return rows;
 }
-export function pasteEntries(rows,field,clear=false) {
-  need(validField(field)); if(!['preset','scene','stomp'].includes(field.kind))fail('invalidPaste');const entries=[];
+export function pasteEntries(rows,field,clear=false,archive=null) {
+  need(validField(field)); if(!['preset','scene','stomp'].includes(field.kind))fail('invalidPaste');const entries=[],width=capacity(archive);
   for(let r=0;r<rows.length;r++)for(let c=0;c<rows[r].length;c++){
     let f;
-    if(field.kind==='preset'){const row=Math.floor((field.preset-1)/4)+r,col=(field.preset-1)%4+c;if(row>63||col>3)fail('pasteBounds');f={kind:'preset',setlist:field.setlist,preset:row*4+col+1};}
+    if(field.kind==='preset'){const row=Math.floor((field.preset-1)/width)+r,col=(field.preset-1)%width+c;if(row>=256/width||col>=width)fail('pasteBounds');f={kind:'preset',setlist:field.setlist,preset:row*width+col+1};}
     else {const col=(field.kind==='stomp'?1:0)+c;if(field.index+r>7||col>1)fail('pasteBounds');f={...field,kind:col===0?'scene':'stomp',index:field.index+r};}
     const value=clean(rows[r][c]);if(value&&count(value)>limit(f))fail('tooLong');if(value!==null||clear)entries.push({field:f,value:value??''});
   }return entries;
