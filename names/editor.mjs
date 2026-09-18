@@ -1,7 +1,9 @@
 import {device,capacity,switchCodes,Editor,parse,validate,get,key,count,limit,code,codes,pasteEntries,tsv,MAX_BYTES} from './model.mjs';
 import {languages,translate} from './i18n.mjs';
 const $=id=>document.getElementById(id);let language='en';try{language=localStorage.getItem('namesLanguage')||'en';}catch{}
-if(!languages[language])language='en';
+const requestedLanguage=new URLSearchParams(location.search).get('lang');
+if(Object.hasOwn(languages,requestedLanguage))language=requestedLanguage;
+if(!Object.hasOwn(languages,language))language='en';
 let editor=null,list=1,preset=1,modeView=false,query='',invalid=new Set(),revision=0,saved=-1,downloaded=-1,saveTimer,saveChain=Promise.resolve(),draft=null,pasting=null,focusGroup=0;
 let draftDevice='quadCortexMini';
 const currentCode=p=>code(p,editor?.archive);

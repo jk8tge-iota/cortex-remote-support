@@ -1,0 +1,66 @@
+{
+  "ko-favorites": {
+    "width": 701,
+    "height": 782
+  },
+  "ko-arrange": {
+    "width": 2230,
+    "height": 1528
+  },
+  "ko-lock": {
+    "width": 82,
+    "height": 82
+  },
+  "ko-expression": {
+    "width": 701,
+    "height": 274
+  },
+  "ko-tempo": {
+    "width": 701,
+    "height": 274
+  },
+  "ko-scenes": {
+    "width": 1428,
+    "height": 882
+  },
+  "ko-hero": {
+    "width": 2230,
+    "height": 1528
+  },
+  "en-favorites": {
+    "width": 701,
+    "height": 778
+  },
+  "en-arrange": {
+    "width": 2230,
+    "height": 1520
+  },
+  "en-lock": {
+    "width": 82,
+    "height": 82
+  },
+  "en-expression": {
+    "width": 701,
+    "height": 272
+  },
+  "en-tempo": {
+    "width": 701,
+    "height": 272
+  },
+  "en-scenes": {
+    "width": 1428,
+    "height": 879
+  },
+  "en-hero": {
+    "width": 2230,
+    "height": 1520
+  },
+  "en-editor": {
+    "width": 1440,
+    "height": 1000
+  },
+  "ko-editor": {
+    "width": 1440,
+    "height": 1000
+  }
+}

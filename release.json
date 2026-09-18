@@ -1,0 +1,26 @@
+{
+  "reviewedAt": "2026-09-18",
+  "betaVersion": "0.1.0 (1)",
+  "sourceCheckpoint": "cd730c0",
+  "distribution": "Original approved TestFlight beta, as confirmed by owner",
+  "minimumOS": "iPadOS 26.0",
+  "available": [
+    "mini MIDI control",
+    "preset navigation",
+    "scenes and Stomp",
+    "arrangement",
+    "Favorites",
+    "performance lock",
+    "local names",
+    "tempo and expression",
+    "JSON backup",
+    "English/Korean/Japanese/German"
+  ],
+  "preview": [
+    "current Names Editor download/selective import workflow requires updated app",
+    "original Quad Cortex profile is Demo only"
+  ],
+  "invitationURL": null,
+  "appStoreURL": null,
+  "notes": "Source review and isolated simulator captures are not a new verification of Apple's distributed binary or physical hardware. Do not advertise working-branch additions as approved-beta features."
+}
